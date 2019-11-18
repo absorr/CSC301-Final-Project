@@ -1,0 +1,1 @@
+SELECT pokedex_no, species FROM final_pokedex;

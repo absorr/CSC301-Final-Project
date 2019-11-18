@@ -1,3 +1,12 @@
+b, strong {
+    font-weight: 500;
+}
+
+.dex-data-container {
+    margin: 0;
+    border: #f0f0f0 solid 1px;
+}
+
 .card-profile .card-header-image {
     max-height: none !important;
     margin-left: -30px !important;
