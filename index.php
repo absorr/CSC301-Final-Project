@@ -1,3 +1,57 @@
+<?php
+require 'config.php';
+
+// Fetch list of Pokemon and their Pokedex entries
+
+$pokemon = array();
+
+$sql = file_get_contents('sql/get_list_pokemon.sql');
+$stmt = $database->prepare($sql);
+$stmt->execute();
+
+$pmon = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+foreach ($pmon as $p) {
+    $pokemon[] = new Pokemon(
+        $p['pokemon_id'],
+        $p['pokedex_id'],
+        $p['nickname'],
+        $p['level'],
+        $p['added_hp'],
+        $p['added_attack'],
+        $p['added_defense'],
+        $p['added_special_attack'],
+        $p['added_special_defense'],
+        $p['added_speed']
+    );
+}
+
+$sql = file_get_contents('sql/get_list_pokemon_dexes.sql');
+$stmt = $database->prepare($sql);
+$stmt->execute();
+
+$dexes = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+foreach ($dexes as $dex) {
+    new Pokedex(
+        $dex['pokedex_id'],
+        $dex['pokedex_no'],
+        $dex['species'],
+        $dex['form'],
+        $dex['family'],
+        $dex['base_hp'],
+        $dex['base_attack'],
+        $dex['base_defense'],
+        $dex['base_special_attack'],
+        $dex['base_special_defense'],
+        $dex['base_speed'],
+        $dex['type_name_1'],
+        $dex['type_name_2']
+    );
+}
+
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -41,25 +95,29 @@
 <!--</nav>-->
 <div class="container">
     <h2 class="title text-center">Pokemon Battler</h2>
-    <div class="card card-profile ml-auto mr-auto" style="max-width: 360px">
-        <div class="card-header card-header-image bg-t-normal-gradient">
-            <a href="#pablo">
-                <img class="img" src="assets/img/pokemon-profiles/133.png" alt="Eevee">
-            </a>
-        </div>
+    <div class="row">
+        <?php foreach ($pokemon as $pmon) : ?>
+        <div class="col-sm-6 col-lg-4 pokemon-card">
+            <div class="card card-profile">
+                <div class="card-header card-header-image bg-t-normal-gradient">
+                    <img class="img" src="assets/img/pokemon-profiles/<?php echo $pmon->getPokedex()->getPokedexNo() ?>.png" alt="<?php echo $pmon->getPokedex()->getSpecies() ?>">
+                </div>
 
-        <div class="card-body ">
-            <h4 class="card-title">Captain Buddy - Lvl. 12</h4>
-            <h6 class="card-category text-gray">Normal Type</h6>
+                <div class="card-body">
+                    <h4 class="card-title"><?php echo $pmon->nickname; ?> - Lvl. <?php echo $pmon->level; ?></h4>
+                    <h6 class="card-category text-gray"><?php echo $pmon->getPokedex()->getDisplayTypes(); ?> Type</h6>
+                </div>
+                <div class="card-footer justify-content-center">
+                    <a href="edit.php?pokemon=<?php echo $pmon->pokemon_id; ?>" class="btn btn-default btn-round">
+                        Edit
+                    </a>
+                    <a href="#pablo" class="btn btn-danger btn-round">
+                        Battle
+                    </a>
+                </div>
+            </div>
         </div>
-        <div class="card-footer justify-content-center">
-            <a href="#pablo" class="btn btn-default btn-round">
-                Edit
-            </a>
-            <a href="#pablo" class="btn btn-danger btn-round">
-                Battle
-            </a>
-        </div>
+        <?php endforeach; ?>
     </div>
 </div>
 <footer class="footer footer-default">

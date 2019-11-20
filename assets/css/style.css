@@ -24,6 +24,10 @@ b, strong {
     display: inline-block;
 }
 
+.pokemon-card {
+    padding: 10px 30px;
+}
+
 .bg-t-normal {
     background-color: #A8A878;
     color: white;
@@ -193,4 +197,12 @@ b, strong {
 
 .bg-t-none-gradient {
     background: linear-gradient(87deg, #68A090 0, #625698 100%) !important;
+}
+
+.ml-1, .mx-1 {
+    margin-left: 3.57% !important;
+}
+
+.mr-1, .mx-1 {
+    margin-right: 3.57% !important;
 }
