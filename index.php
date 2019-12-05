@@ -70,76 +70,66 @@ foreach ($dexes as $dex) {
 </head>
 
 <body>
-<!--<nav class="navbar bg-danger fixed-top navbar-expand-lg">-->
-<!--    <div class="container">-->
-<!--        <div class="navbar-translate">-->
-<!--            <a class="navbar-brand" href="https://demos.creative-tim.com/material-kit/index.html">-->
-<!--                Material Kit </a>-->
-<!--            <button class="navbar-toggler" type="button" data-toggle="collapse" aria-expanded="false" aria-label="Toggle navigation">-->
-<!--                <span class="sr-only">Toggle navigation</span>-->
-<!--                <span class="navbar-toggler-icon"></span>-->
-<!--                <span class="navbar-toggler-icon"></span>-->
-<!--                <span class="navbar-toggler-icon"></span>-->
-<!--            </button>-->
-<!--        </div>-->
-<!--        <div class="collapse navbar-collapse">-->
-<!--            <ul class="navbar-nav ml-auto">-->
-<!--                <li class="nav-item">-->
-<!--                    <a href="#" class="nav-link">-->
-<!--                        <i class="material-icons">apps</i> Template-->
-<!--                    </a>-->
-<!--                </li>-->
-<!--            </ul>-->
-<!--        </div>-->
-<!--    </div>-->
-<!--</nav>-->
 <div class="container">
     <h2 class="title text-center">Pokemon Battler</h2>
-    <div class="row">
-        <?php foreach ($pokemon as $pmon) : ?>
-        <div class="col-sm-6 col-lg-4 pokemon-card">
-            <div class="card card-profile">
-                <div class="card-header card-header-image bg-t-normal-gradient">
-                    <img class="img" src="assets/img/pokemon-profiles/<?php echo $pmon->getPokedex()->getPokedexNo() ?>.png" alt="<?php echo $pmon->getPokedex()->getSpecies() ?>">
-                </div>
+    <form id="battle-select" action="battle.php" method="get">
+        <div class="row">
+            <?php foreach ($pokemon as $pmon) : ?>
+            <div class="col-sm-6 col-lg-4 pokemon-card">
+                <div class="card card-profile">
+                    <div class="card-header card-header-image bg-t-<?php echo strtolower($pmon->getPokedex()->getTypeName1()); ?>-gradient">
+                        <img class="img" src="assets/img/pokemon-profiles/<?php echo $pmon->getPokedex()->getPokedexNo() ?>.png" alt="<?php echo $pmon->getPokedex()->getSpecies() ?>">
+                    </div>
 
-                <div class="card-body">
-                    <h4 class="card-title"><?php echo $pmon->nickname; ?> - Lvl. <?php echo $pmon->level; ?></h4>
-                    <h6 class="card-category text-gray"><?php echo $pmon->getPokedex()->getDisplayTypes(); ?> Type</h6>
-                </div>
-                <div class="card-footer justify-content-center">
-                    <a href="edit.php?pokemon=<?php echo $pmon->pokemon_id; ?>" class="btn btn-default btn-round">
-                        Edit
-                    </a>
-                    <a href="#pablo" class="btn btn-danger btn-round">
-                        Battle
-                    </a>
+                    <div class="card-body">
+                        <h4 class="card-title"><?php echo $pmon->nickname; ?> - Lvl. <?php echo $pmon->level; ?></h4>
+                        <h6 class="card-category text-gray"><?php echo $pmon->getPokedex()->getDisplayTypes(); ?> Type</h6>
+                    </div>
+                    <div class="card-footer justify-content-center">
+                        <a href="edit.php?pokemon=<?php echo $pmon->pokemon_id; ?>" class="btn btn-default btn-round">
+                            Edit
+                        </a>
+                        <a class="btn btn-danger btn-round">
+                            <div class="form-check form-check-inline">
+                                <label class="form-check-label">
+                                    <input class="form-check-input battle-select-check" type="checkbox" name="pokemonIds[]" value="<?php echo $pmon->pokemon_id; ?>"> Battle
+                                    <span class="form-check-sign">
+                                        <span class="check"></span>
+                                    </span>
+                                </label>
+                            </div>
+                        </a>
+                    </div>
                 </div>
             </div>
+            <?php endforeach; ?>
         </div>
-        <?php endforeach; ?>
+    </form>
+    <div class="text-center">
+        <a href="edit.php" class="btn btn-lg btn-outline-danger btn-round"><i class="material-icons">add</i> Add New Pokemon</a>
     </div>
 </div>
 <footer class="footer footer-default">
     <div class="container">
-        <nav class="float-left">
+        <nav class="text-center">
             <ul>
                 <li>
-                    <a href="https://www.creative-tim.com/">
-                        Creative Tim
-                    </a>
+                    Will Stephenson, CSC301 Final Project
                 </li>
             </ul>
         </nav>
-        <div class="copyright float-right">
-            &copy;
-            <script>
-                document.write(new Date().getFullYear())
-            </script>, made with <i class="material-icons">favorite</i> by
-            <a href="https://www.creative-tim.com/" target="blank">Creative Tim</a> for a better web.
+        <div class="copyright text-center">
+            Pokémon © 2002-2019 Pokémon. © 1995-2019 Nintendo/Creatures Inc./GAME FREAK inc. ™, ® and Pokémon character names are trademarks of Nintendo.
         </div>
     </div>
 </footer>
+
+<nav class="navbar bg-danger fixed-bottom">
+    <div class="container">
+        <strong id="pokemon-count">0</strong> Pokemon Selected
+        <button class="btn btn-round btn-outline btn-outline-light" id="battle-submit" onclick="onClickBattle()" disabled>Battle!</button>
+    </div>
+</nav>
 
 <script src="./assets/js/core/jquery.min.js" type="text/javascript"></script>
 <script src="./assets/js/core/popper.min.js" type="text/javascript"></script>
@@ -154,11 +144,7 @@ foreach ($dexes as $dex) {
 <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1/jquery-ui.min.js"></script>
 <link href="http://ajax.googleapis.com/ajax/libs/jqueryui/1/themes/smoothness/jquery-ui.min.css" rel="stylesheet"
       type="text/css"/>
-<script>
-    //Remove JQuery UI conflicts with Bootstrap
-    $.widget.bridge('uibutton', $.ui.button);
-    $.widget.bridge('uitooltip', $.ui.tooltip);
-</script>
+<script src="assets/js/script.js"></script>
 </body>
 
 </html>

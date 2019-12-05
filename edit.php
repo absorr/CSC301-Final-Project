@@ -25,6 +25,43 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $sql = isset($_POST['pokemonId']) && !empty($_POST['pokemonId']) ? file_get_contents('sql/update_pokemon.sql') : file_get_contents('sql/add_pokemon.sql');
     $stmt = $database->prepare($sql);
     $stmt->execute($params);
+
+    $pokemon = new Pokemon(
+        $database->lastInsertId(),
+        $_POST['pokedexId'],
+        $_POST['name'],
+        $_POST['level'],
+        $_POST['add-hp'],
+        $_POST['add-atk'],
+        $_POST['add-def'],
+        $_POST['add-spatk'],
+        $_POST['add-spdef'],
+        $_POST['add-spd']
+    );
+
+    $sql = file_get_contents('sql/get_pokedex_info.sql');
+    $stmt = $database->prepare($sql);
+    $stmt->execute(array(
+        "pokedexNo" => $_POST['pokedexId']
+    ));
+
+    $dexInfo = $stmt->fetchAll(PDO::FETCH_ASSOC)[0];
+
+    new Pokedex(
+        $dexInfo['pokedex_id'],
+        $dexInfo['pokedex_no'],
+        $dexInfo['species'],
+        $dexInfo['form'],
+        $dexInfo['family'],
+        $dexInfo['base_hp'],
+        $dexInfo['base_attack'],
+        $dexInfo['base_defense'],
+        $dexInfo['base_special_attack'],
+        $dexInfo['base_special_defense'],
+        $dexInfo['base_speed'],
+        $dexInfo['type_name_1'],
+        $dexInfo['type_name_2']
+    );
 } elseif (isset($_GET['pokemon'])) {
     $sql = file_get_contents('sql/get_pokemon.sql');
     $stmt = $database->prepare($sql);
@@ -121,7 +158,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 <div class="form-row">
                     <div class="form-group col-md-9">
                         <label for="name">Pokemon's Name</label>
-                        <input type="text" class="form-control" id="name" name="name" value="<?php if (isset($pokemon)) echo $pokemon->nickname; ?>" required>
+                        <input type="text" class="form-control" id="name" name="name" maxlength="20" value="<?php if (isset($pokemon)) echo $pokemon->nickname; ?>" required>
                     </div>
                     <div class="form-group col-md-3">
                         <label for="level">Level</label>

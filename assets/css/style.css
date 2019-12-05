@@ -28,6 +28,14 @@ b, strong {
     padding: 10px 30px;
 }
 
+.pokemon-card .form-check {
+    margin: 0;
+}
+
+.pokemon-card .form-check-label {
+    color: white;
+}
+
 .bg-t-normal {
     background-color: #A8A878;
     color: white;
@@ -205,4 +213,18 @@ b, strong {
 
 .mr-1, .mx-1 {
     margin-right: 3.57% !important;
+}
+
+.navbar.fixed-bottom {
+    margin-bottom: 0;
+}
+
+.navbar>.container,
+.navbar>.container-fluid {
+    display: block;
+    text-align: center;
+}
+
+.navbar.fixed-bottom button {
+    margin-left: 0.5rem;
 }
