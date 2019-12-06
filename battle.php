@@ -8,6 +8,19 @@ if (!isset($_GET['pokemonIds'])) {
 
 $pokemon = loadPokemonBattleData($_GET['pokemonIds'], $database);
 
+$csMap = array();
+foreach ($pokemon as $pmon) {
+    $csMap[$pmon->pokemon_id] = array(
+            "atk" => 0,
+            "def" => 0,
+            "spatk" => 0,
+            "spdef" => 0,
+            "speed" => 0
+    );
+}
+
+$_SESSION['COMBAT_STAGES'] = $csMap;
+
 ?>
 
 <!DOCTYPE html>

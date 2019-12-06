@@ -15,11 +15,14 @@ SELECT pokemon_id, nickname, p.pokedex_id, level, added_attack, added_defense, a
 
        m4.move_id as move_id_4, m4.name as move_name_4, m4.effect as move_effect_4, m4.freq as move_freq_4, m4.class as move_class_4,
        m4.`range` as move_range_4, m4.contest_type as move_contest_type_4, m4.contest_effect as move_contest_effect_4,
-       m4.crits_on as move_crits_on_4, m4.type as move_type_4, m4.triggers as move_triggers_4, m4.db as move_db_4
+       m4.crits_on as move_crits_on_4, m4.type as move_type_4, m4.triggers as move_triggers_4, m4.db as move_db_4,
+
+       base_speed + added_speed as initiative
 FROM final_pokemon p
          JOIN final_pokedex fp on p.pokedex_id = fp.pokedex_id
          LEFT JOIN final_moves m1 on p.move_id_1 = m1.move_id
          LEFT JOIN final_moves m2 on p.move_id_2 = m2.move_id
          LEFT JOIN final_moves m3 on p.move_id_3 = m3.move_id
          LEFT JOIN final_moves m4 on p.move_id_4 = m4.move_id
-WHERE pokemon_id IN (%s);
+WHERE pokemon_id IN (%s)
+ORDER BY initiative desc;

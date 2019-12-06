@@ -8,8 +8,8 @@ if (!isset($_GET['targetId']) || !isset($_GET['userId']) || !isset($_GET['moveIn
 
 $pokemon = loadPokemonBattleData(array($_GET['targetId'], $_GET['userId']), $database, '../../../');
 
-$user = $pokemon[$_GET['targetId']];
-$target = $pokemon[$_GET['userId']];
+$user = $pokemon[$_GET['userId']];
+$target = $pokemon[$_GET['targetId']];
 
 if ($_GET['moveIndex'] == 1)
     $move = $user->move1;
@@ -20,11 +20,19 @@ elseif ($_GET['moveIndex'] == 3)
 else
     $move = $user->move4;
 
+if ($move->class == "Status") {
+    doMoveCSEffects($move, $user, $target);
+    die();
+}
+
 // Get stats appropriate for move class
 $atk = $move->class == "Physical" ? $user->getAttack() : $user->getSpecialAttack();
 $def = $move->class == "Physical" ? $target->getDefense() : $target->getSpecialDefense();
 // Increase damage base if Same Type Attack Bonus (STAB) applies
 $db = intval($move->db) + ($user->getPokedex()->getTypeName1() == $move->type || $user->getPokedex()->getTypeName2() == $move->type ? 2 : 0);
+// Get Combat Stage multipliers
+$atk *= getCSMultiplier($_SESSION['COMBAT_STAGES'][$user->pokemon_id][$move->class == "Physical" ? 'atk' : 'spatk']);
+$def *= getCSMultiplier($_SESSION['COMBAT_STAGES'][$target->pokemon_id][$move->class == "Physical" ? 'def' : 'spdef']);
 
 // Calculate that damage!!!
 $dmg = ((rollDB($db) + $atk) * getTypeEffectivity($move->type, $target, $database)) - $def;
@@ -33,6 +41,8 @@ $dmg = ((rollDB($db) + $atk) * getTypeEffectivity($move->type, $target, $databas
 if ($dmg < 1) $dmg = 1;
 
 echo $dmg;
+
+doMoveCSEffects($move, $user, $target);
 
 function rollDB($db) {
     switch ($db) {

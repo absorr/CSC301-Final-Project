@@ -49,27 +49,27 @@ function onSelectTarget() {
 
     if (!target_id) return;
 
-    if ($("#move-modal-db").html() !== "--") {
-        $.ajax('api/v1/getMoveDamage', {
-            data: {
-                'targetId': target_id,
-                'userId': move_user_id,
-                'moveIndex': move_index
-            },
-            success: function (value) {
+    $.ajax('api/v1/doMove', {
+        data: {
+            'targetId': target_id,
+            'userId': move_user_id,
+            'moveIndex': move_index
+        },
+        success: function (value) {
+            if (value) {
                 HEALTH[target_id] -= value;
 
                 if (HEALTH[target_id] <= 0) {
                     window.alert('The pokemon fainted!');
                 }
 
-                var healthBar = $("[data-pokemon-id='"+target_id+"'] .progress-bar");
+                var healthBar = $("[data-pokemon-id='" + target_id + "'] .progress-bar");
                 var percent = HEALTH[target_id] / parseInt(healthBar.attr("aria-valuemax"));
 
                 healthBar.attr("aria-valuenow", HEALTH[target_id]).css("width", (percent * 100) + "%");
             }
-        });
-    }
+        }
+    });
 
     $("#modalSelectTarget").modal("hide");
 }
