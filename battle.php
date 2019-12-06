@@ -34,6 +34,17 @@ $pokemon = loadPokemonBattleData($_GET['pokemonIds'], $database);
         <?php foreach ($pokemon as $pmon) : ?>
             <div class="col-sm-6 col-lg-4 pokemon-card" data-pokemon-id="<?php echo $pmon->pokemon_id ?>">
                 <div class="card card-profile">
+                    <div class="progress-container progress-danger progress-health">
+                        <span class="progress-badge">Health</span>
+                        <div class="progress">
+                            <div class="progress-bar progress-bar-danger" role="progressbar"
+                                 aria-valuenow="<?php echo $pmon->getMaxHealth() ?>"
+                                 aria-valuemin="0"
+                                 aria-valuemax="<?php echo $pmon->getMaxHealth() ?>"
+                                 style="width: 100%;">
+                            </div>
+                        </div>
+                    </div>
                     <div class="card-header card-header-image bg-t-<?php echo strtolower($pmon->getPokedex()->getTypeName1()); ?>-gradient">
                         <img class="img" src="assets/img/pokemon-profiles/<?php echo $pmon->getPokedex()->getPokedexNo() ?>.png" alt="<?php echo $pmon->getPokedex()->getSpecies() ?>">
                     </div>
@@ -108,13 +119,6 @@ $pokemon = loadPokemonBattleData($_GET['pokemonIds'], $database);
         </div>
     </div>
 </footer>
-
-<nav class="navbar bg-danger fixed-bottom">
-    <div class="container">
-        <strong id="pokemon-count">0</strong> Pokemon Selected
-        <button class="btn btn-round btn-outline btn-outline-light" id="battle-submit" onclick="onClickBattle()" disabled>Battle!</button>
-    </div>
-</nav>
 
 <div class="modal fade bd-example-modal-sm" id="modalSelectTarget" tabindex="-1" role="dialog" aria-labelledby="move-modal-name" aria-hidden="true">
     <div class="modal-dialog modal-sm">

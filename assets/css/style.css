@@ -62,6 +62,14 @@ b, strong {
     width: 100%;
 }
 
+.progress-health {
+    position: relative;
+    left: 80px;
+    top: 35px;
+    width: calc(100% - 100px);
+    margin-bottom: -48px;
+}
+
 .bg-t-normal {
     background-color: #A8A878;
     color: white;

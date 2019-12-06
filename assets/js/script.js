@@ -62,9 +62,14 @@ function onSelectTarget() {
                 if (HEALTH[target_id] <= 0) {
                     window.alert('The pokemon fainted!');
                 }
+
+                var healthBar = $("[data-pokemon-id='"+target_id+"'] .progress-bar");
+                var percent = HEALTH[target_id] / parseInt(healthBar.attr("aria-valuemax"));
+
+                healthBar.attr("aria-valuenow", HEALTH[target_id]).css("width", (percent * 100) + "%");
             },
             complete: function () {
-                $("#modalSelectTarget").modal("close");
+                $("#modalSelectTarget").modal("hide");
             }
         });
     }
