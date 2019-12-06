@@ -126,7 +126,7 @@ function doMoveCSEffects($move, $user, $target) {
         $triggers = json_decode($move->triggers);
 
         foreach ($triggers as $trigger) {
-            if ($trigger->type == "CS") {
+            if (property_exists($target, 'type') && $trigger->type == "CS") {
                 $targetId = $trigger->target == "SELF" ? $user->pokemon_id : $target->pokemon_id;
                 foreach ($trigger->stat as $stat) {
                     if ($_SESSION['COMBAT_STAGES'][$targetId][$stat] < 6 && $_SESSION['COMBAT_STAGES'][$targetId][$stat] > -6)

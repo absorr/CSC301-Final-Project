@@ -57,7 +57,7 @@ function onSelectTarget() {
         },
         success: function (value) {
             if (value) {
-                HEALTH[target_id] -= value;
+                HEALTH[target_id] -= parseInt(value);
 
                 if (HEALTH[target_id] <= 0) {
                     window.alert('The pokemon fainted!');

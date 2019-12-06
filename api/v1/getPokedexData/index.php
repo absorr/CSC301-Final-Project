@@ -3,7 +3,7 @@ include_once '../../../config.php';
 
 $pokedexNo = $_GET['pokedexNo'];
 
-$sql = file_get_contents('../../sql/get_pokedex_info.sql');
+$sql = file_get_contents('../../../sql/get_pokedex_info.sql');
 $stmt = $database->prepare($sql);
 $stmt->execute(array(
     "pokedexNo" => $pokedexNo

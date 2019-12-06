@@ -5,9 +5,18 @@ require 'config.php';
 
 $pokemon = array();
 
-$sql = file_get_contents('sql/get_list_pokemon.sql');
-$stmt = $database->prepare($sql);
-$stmt->execute();
+if (isset($_GET['search'])) {
+    $sql = file_get_contents('sql/search_pokemon.sql');
+    $stmt = $database->prepare($sql);
+    $stmt->execute(array(
+            "search" => $_GET['search']
+    ));
+}
+else {
+    $sql = file_get_contents('sql/get_list_pokemon.sql');
+    $stmt = $database->prepare($sql);
+    $stmt->execute();
+}
 
 $pmon = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
@@ -72,6 +81,19 @@ foreach ($dexes as $dex) {
 <body>
 <div class="container">
     <h2 class="title text-center">Pokemon Battler</h2>
+    <form id="search-form" method="get">
+        <div class="form-group col-md-4 offset-md-4">
+            <input type="file" multiple="" class="inputFileHidden">
+            <div class="input-group">
+                <input type="text" class="form-control inputFileVisible" name="search" placeholder="Search by name or type">
+                <span class="input-group-btn">
+                    <button type="submit" class="btn btn-fab btn-round btn-danger">
+                        <i class="material-icons">search</i>
+                    </button>
+                </span>
+            </div>
+        </div>
+    </form>
     <form id="battle-select" action="battle.php" method="get">
         <div class="row">
             <?php foreach ($pokemon as $pmon) : ?>
