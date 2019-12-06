@@ -1,0 +1,2 @@
+UPDATE final_pokemon SET nickname = :nickname, pokedex_id = :pokedex_id, level = :level, added_attack = :added_attack, added_defense = :added_defense, added_special_attack = :added_special_attack, added_special_defense = :added_special_defense, added_speed = :added_speed, added_hp = :added_hp, move_id_1 = :move_id_1, move_id_2 = :move_id_2, move_id_3 = :move_id_3, move_id_4 = :move_id_4
+WHERE pokemon_id = :pokemon_id

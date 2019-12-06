@@ -67,10 +67,9 @@ function onSelectTarget() {
                 var percent = HEALTH[target_id] / parseInt(healthBar.attr("aria-valuemax"));
 
                 healthBar.attr("aria-valuenow", HEALTH[target_id]).css("width", (percent * 100) + "%");
-            },
-            complete: function () {
-                $("#modalSelectTarget").modal("hide");
             }
         });
     }
+
+    $("#modalSelectTarget").modal("hide");
 }

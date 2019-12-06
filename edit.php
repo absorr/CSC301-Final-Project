@@ -27,52 +27,23 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         "added_special_defense" => $_POST['add-spdef'],
         "added_speed" => $_POST['add-spd'],
         "added_hp" => $_POST['add-hp'],
-        "move_id_1" => $_POST['move1'],
-        "move_id_2" => $_POST['move2'],
-        "move_id_3" => $_POST['move3'],
-        "move_id_4" => $_POST['move4']
+        "move_id_1" => $_POST['move1'] ? $_POST['move1'] : null,
+        "move_id_2" => $_POST['move2'] ? $_POST['move2'] : null,
+        "move_id_3" => $_POST['move3'] ? $_POST['move3'] : null,
+        "move_id_4" => $_POST['move4'] ? $_POST['move4'] : null
     );
 
-    $sql = isset($_POST['pokemonId']) && !empty($_POST['pokemonId']) ? file_get_contents('sql/update_pokemon.sql') : file_get_contents('sql/add_pokemon.sql');
+    if (isset($_POST['pokemonId']) && !empty($_POST['pokemonId'])) {
+        $sql = file_get_contents('sql/update_pokemon.sql');
+        $params['pokemon_id'] = $_POST['pokemonId'];
+    } else {
+        $sql = file_get_contents('sql/add_pokemon.sql');
+    }
     $stmt = $database->prepare($sql);
     $stmt->execute($params);
 
-    $pokemon = new Pokemon(
-        $database->lastInsertId(),
-        $_POST['pokedexId'],
-        $_POST['name'],
-        $_POST['level'],
-        $_POST['add-hp'],
-        $_POST['add-atk'],
-        $_POST['add-def'],
-        $_POST['add-spatk'],
-        $_POST['add-spdef'],
-        $_POST['add-spd']
-    );
-
-    $sql = file_get_contents('sql/get_pokedex_info.sql');
-    $stmt = $database->prepare($sql);
-    $stmt->execute(array(
-        "pokedexNo" => $_POST['pokedexId']
-    ));
-
-    $dexInfo = $stmt->fetchAll(PDO::FETCH_ASSOC)[0];
-
-    new Pokedex(
-        $dexInfo['pokedex_id'],
-        $dexInfo['pokedex_no'],
-        $dexInfo['species'],
-        $dexInfo['form'],
-        $dexInfo['family'],
-        $dexInfo['base_hp'],
-        $dexInfo['base_attack'],
-        $dexInfo['base_defense'],
-        $dexInfo['base_special_attack'],
-        $dexInfo['base_special_defense'],
-        $dexInfo['base_speed'],
-        $dexInfo['type_name_1'],
-        $dexInfo['type_name_2']
-    );
+    header("LOCATION: index.php");
+    die();
 } elseif (isset($_GET['pokemon'])) {
     $sql = file_get_contents('sql/get_pokemon.sql');
     $stmt = $database->prepare($sql);
@@ -136,29 +107,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 </head>
 
 <body>
-<!--<nav class="navbar bg-danger fixed-top navbar-expand-lg">-->
-<!--    <div class="container">-->
-<!--        <div class="navbar-translate">-->
-<!--            <a class="navbar-brand" href="https://demos.creative-tim.com/material-kit/index.html">-->
-<!--                Material Kit </a>-->
-<!--            <button class="navbar-toggler" type="button" data-toggle="collapse" aria-expanded="false" aria-label="Toggle navigation">-->
-<!--                <span class="sr-only">Toggle navigation</span>-->
-<!--                <span class="navbar-toggler-icon"></span>-->
-<!--                <span class="navbar-toggler-icon"></span>-->
-<!--                <span class="navbar-toggler-icon"></span>-->
-<!--            </button>-->
-<!--        </div>-->
-<!--        <div class="collapse navbar-collapse">-->
-<!--            <ul class="navbar-nav ml-auto">-->
-<!--                <li class="nav-item">-->
-<!--                    <a href="#" class="nav-link">-->
-<!--                        <i class="material-icons">apps</i> Template-->
-<!--                    </a>-->
-<!--                </li>-->
-<!--            </ul>-->
-<!--        </div>-->
-<!--    </div>-->
-<!--</nav>-->
 <div class="container">
     <h2 class="title text-center">Manage Pokemon</h2>
     <div class="card card-profile ml-auto mr-auto" style="max-width: 500px">
@@ -167,8 +115,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 <h4 class="card-title">Add New Pokemon</h4>
             </div>
 
-            <input type="hidden" id="pokemonId" name="pokemonId"/>
-            <input type="hidden" id="pokedexId" name="pokedexId"/>
+            <input type="hidden" id="pokemonId" name="pokemonId" value="<?php if (isset($pokemon)) echo $pokemon->pokemon_id; ?>"/>
+            <input type="hidden" id="pokedexId" name="pokedexId" value="<?php if (isset($pokemon)) echo $pokemon->pokedex_id; ?>"/>
 
             <div class="card-body">
                 <div class="form-row">
