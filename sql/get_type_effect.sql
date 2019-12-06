@@ -1,0 +1,1 @@
+SELECT type_name_def, type_name_atk, eff_multiplier FROM final_type_rel WHERE type_name_atk=:type;

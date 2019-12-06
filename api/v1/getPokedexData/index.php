@@ -1,5 +1,5 @@
 <?php
-include_once '../../../_common/config.php';
+include_once '../../../config.php';
 
 $pokedexNo = $_GET['pokedexNo'];
 

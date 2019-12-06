@@ -8,6 +8,13 @@ $stmt->execute();
 
 $DexNames = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
+// Fetch list of move names
+$sql = file_get_contents('sql/get_list_move_names.sql');
+$stmt = $database->prepare($sql);
+$stmt->execute();
+
+$MoveNames = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
 // If submitting form, save Pokemon
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $params = array(
@@ -19,7 +26,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         "added_special_attack" => $_POST['add-spatk'],
         "added_special_defense" => $_POST['add-spdef'],
         "added_speed" => $_POST['add-spd'],
-        "added_hp" => $_POST['add-hp']
+        "added_hp" => $_POST['add-hp'],
+        "move_id_1" => $_POST['move1'],
+        "move_id_2" => $_POST['move2'],
+        "move_id_3" => $_POST['move3'],
+        "move_id_4" => $_POST['move4']
     );
 
     $sql = isset($_POST['pokemonId']) && !empty($_POST['pokemonId']) ? file_get_contents('sql/update_pokemon.sql') : file_get_contents('sql/add_pokemon.sql');
@@ -83,7 +94,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $p[0]['added_special_defense'],
         $p[0]['added_speed']
     );
-    
+
+    $pokemon->move1 = new Move($p[0]['move_id_1'], $p[0]['move_name_1'], $p[0]['move_type_1']);
+    $pokemon->move2 = new Move($p[0]['move_id_2'], $p[0]['move_name_2'], $p[0]['move_type_2']);
+    $pokemon->move3 = new Move($p[0]['move_id_3'], $p[0]['move_name_3'], $p[0]['move_type_3']);
+    $pokemon->move4 = new Move($p[0]['move_id_4'], $p[0]['move_name_4'], $p[0]['move_type_4']);
+
     new Pokedex(
         $p[0]['pokedex_id'],
         $p[0]['pokedex_no'],
@@ -274,6 +290,30 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                         </div>
                     </div>
                 </section>
+                <hr/>
+                <section id="section-moves">
+                    <h6>Moves</h6>
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <input type="text" class="form-control input-move" id="move1-name" name="move1-name" value="<?php if (isset($pokemon) && isset($pokemon->move1)) echo $pokemon->move1->name; ?>">
+                            <input type="hidden" id="move1" name="move1" value="<?php if (isset($pokemon) && isset($pokemon->move1)) echo $pokemon->move1->move_id; ?>">
+                        </div>
+                        <div class="form-group col-md-6">
+                            <input type="text" class="form-control input-move" id="move2-name" name="move2-name" value="<?php if (isset($pokemon) && isset($pokemon->move2)) echo $pokemon->move2->name; ?>">
+                            <input type="hidden" id="move2" name="move2" value="<?php if (isset($pokemon) && isset($pokemon->move2)) echo $pokemon->move2->move_id; ?>">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <input type="text" class="form-control input-move" id="move3-name" name="move3-name" value="<?php if (isset($pokemon) && isset($pokemon->move3)) echo $pokemon->move3->name; ?>">
+                            <input type="hidden" id="move3" name="move3" value="<?php if (isset($pokemon) && isset($pokemon->move3)) echo $pokemon->move3->move_id; ?>">
+                        </div>
+                        <div class="form-group col-md-6">
+                            <input type="text" class="form-control input-move" id="move4-name" name="move4-name" value="<?php if (isset($pokemon) && isset($pokemon->move4)) echo $pokemon->move4->name; ?>">
+                            <input type="hidden" id="move4" name="move4" value="<?php if (isset($pokemon) && isset($pokemon->move4)) echo $pokemon->move4->move_id; ?>">
+                        </div>
+                    </div>
+                </section>
             </div>
             <div class="card-footer justify-content-center">
                 <button type="submit" class="btn btn-danger btn-round">
@@ -332,10 +372,27 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         <?php endfor; ?>
     ];
 
+    const MOVE_NAMES = [
+        <?php for($i = 0; $i < sizeof($MoveNames); $i++) : ?>
+        {
+            label: "<?php echo $MoveNames[$i]['name'].' ('.$MoveNames[$i]['type'].')' ?>",
+            value: "<?php echo $MoveNames[$i]['name'] ?>",
+            id: "<?php echo $MoveNames[$i]['move_id'] ?>"
+        }<?php if ($i != sizeof($MoveNames) - 1) echo ',' ?>
+        <?php endfor; ?>
+    ];
+
     $("#dex").autocomplete({
         source: DEX_NAMES
     }).blur(function () {
         lookupPokemon($(this).val());
+    });
+
+    $(".input-move").autocomplete({
+        source: MOVE_NAMES,
+        select: function (e, ui) {
+            $(this).siblings().first().val(ui.item.id);
+        }
     });
 
     $("#section-stats input").change(function () {
@@ -350,7 +407,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     });
 
     function lookupPokemon(pokedexNo) {
-        $.ajax('api/getPokedexData', {
+        $.ajax('api/v1/getPokedexData', {
             data: {
                 'pokedexNo': pokedexNo
             },

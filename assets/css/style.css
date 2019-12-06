@@ -36,6 +36,32 @@ b, strong {
     color: white;
 }
 
+.pokemon-card hr {
+    margin: 0;
+}
+
+.card-footer.move-list {
+    display: table !important;
+}
+
+.card-footer .row {
+    display: table-row;
+}
+
+.card-footer .col {
+    display: table-cell;
+    padding: 0;
+}
+
+.move-type {
+    padding: 0.1rem 0.4rem;
+    border-radius: 1rem;
+}
+
+.modal .card-header {
+    width: 100%;
+}
+
 .bg-t-normal {
     background-color: #A8A878;
     color: white;

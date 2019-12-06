@@ -1,0 +1,1 @@
+SELECT move_id, name, type FROM final_moves;

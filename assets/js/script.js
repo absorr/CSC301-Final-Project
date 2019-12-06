@@ -13,6 +13,8 @@ $(function () {
             $("#battle-submit").attr("disabled", true);
         }
     });
+
+    $(".move-list button").click(onClickUseMove);
 });
 
 function onClickBattle() {
@@ -20,5 +22,50 @@ function onClickBattle() {
 
     if (selectedCount > 0) {
         $("#battle-select").submit();
+    }
+}
+
+var move_index = 0;
+var move_user_id = 0;
+
+function onClickUseMove() {
+    var move = MOVES[$(this).attr("data-move-id")];
+    move_index = $(this).attr("data-index");
+    move_user_id = $(this).closest(".pokemon-card").attr("data-pokemon-id");
+
+    if (!move) return window.alert("ERROR: Move not found for id " + $(this).attr("data-move-id"));
+
+    $("#move-modal-name").html(move['name']);
+    $("#move-modal-type").html(move['type']);
+    $("#move-modal-class").html(move['class']);
+    $("#move-modal-db").html(move['db'] ? move['db'] : '--');
+    $("#move-modal-desc").html(move['effect']);
+
+    $("#modalSelectTarget").modal("show");
+}
+
+function onSelectTarget() {
+    var target_id = $("[name='target']:checked").val();
+
+    if (!target_id) return;
+
+    if ($("#move-modal-db").html() !== "--") {
+        $.ajax('api/v1/getMoveDamage', {
+            data: {
+                'targetId': target_id,
+                'userId': move_user_id,
+                'moveIndex': move_index
+            },
+            success: function (value) {
+                HEALTH[target_id] -= value;
+
+                if (HEALTH[target_id] <= 0) {
+                    window.alert('The pokemon fainted!');
+                }
+            },
+            complete: function () {
+                $("#modalSelectTarget").modal("close");
+            }
+        });
     }
 }

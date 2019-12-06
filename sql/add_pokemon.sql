@@ -1,2 +1,2 @@
-INSERT INTO final_pokemon (nickname, pokedex_id, level, added_attack, added_defense, added_special_attack, added_special_defense, added_speed, added_hp)
-VALUES (:nickname, :pokedex_id, :level, :added_attack, :added_defense, :added_special_attack, :added_special_defense, :added_speed, :added_hp)
+INSERT INTO final_pokemon (nickname, pokedex_id, level, added_attack, added_defense, added_special_attack, added_special_defense, added_speed, added_hp, move_id_1, move_id_2, move_id_3, move_id_4)
+VALUES (:nickname, :pokedex_id, :level, :added_attack, :added_defense, :added_special_attack, :added_special_defense, :added_speed, :added_hp, :move_id_1, :move_id_2, :move_id_3, :move_id_4)
